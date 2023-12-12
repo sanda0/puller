@@ -1,8 +1,25 @@
 {
-	"key": "abcdefghijklmn",
+	"key": "123456",
 	"repos": [
 		{
 			"name": "testrepo",
+			"path": "/var/www/testrepo",
+			"branch": "main",
+			"events": [
+				{
+					"type": "push",
+					"commands": ["git pull", "php artisan optimize:clear"]
+				}
+			],
+			"notifications": [
+				{
+					"type": "email",
+					"to": ["sandakelum@pramixit.com"]
+				}
+			]
+		},
+		{
+			"name": "yoyo",
 			"path": "/var/www/testrepo",
 			"branch": "main",
 			"events": [
