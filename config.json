@@ -4,7 +4,7 @@
 		{
 			"name": "testrepo",
 			"path": "/var/www/testrepo",
-			"branch": "main",
+			"branch": "refs/heads/main",
 			"events": [
 				{
 					"type": "push",
@@ -21,7 +21,7 @@
 		{
 			"name": "yoyo",
 			"path": "/var/www/testrepo",
-			"branch": "main",
+			"branch": "refs/heads/main",
 			"events": [
 				{
 					"type": "push",

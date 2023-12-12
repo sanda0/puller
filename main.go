@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sanda0/puller/stucts"
+	"github.com/sanda0/puller/util"
 )
 
 func findRepoByName(repoName string) (*stucts.Repo, error) {
@@ -74,7 +75,10 @@ func handleWebHook(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err)
 	}
-	go RunCmd(payload.EventName, repo.Path, repo.Events)
+	fmt.Println("payload: ", util.PrettyPrintStruct(payload))
+	if payload.Ref == repo.Branch {
+		go RunCmd(payload.EventName, repo.Path, repo.Events)
+	}
 }
 
 func RunCmd(event string, path string, events []stucts.Event) {
