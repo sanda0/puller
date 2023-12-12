@@ -9,6 +9,7 @@
 - [Configuration](#configuration)
 - [Logging](#logging)
 - [Usage](#usage)
+- [Todo](#todo)
 
 
 ## Configuration
@@ -78,6 +79,12 @@ The `writeLogFile` function facilitates the logging of messages to the `app.log`
 
 1. Set up a webhook in your GitLab project to communicate with the program. Point the webhook to the `/puller` endpoint on the running server where your program is listening.
 
-2. Execute the compiled binary. 
+2. Run the binary as a service by following the system-specific steps to configure your compiled binary for service execution.
+
+## TODO List
+
+- [x] Logging the success or failure of the executed commands.
+- [ ] E-mail notifications.
+- [ ] Discord notifications.
 
 
