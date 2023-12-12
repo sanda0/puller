@@ -89,8 +89,9 @@ func RunCmd(event string, path string, events []stucts.Event) {
 			output, err := exec.Command("sh", "-c", cmd).CombinedOutput()
 			if err != nil {
 				writeLogFile("ERROR", fmt.Sprintf("Failed to execute command: %s\nOutput: %s\nError: %v\n", cmd, string(output), err))
+			} else {
+				writeLogFile("INFO", fmt.Sprintf("Command executed successfully: %s\nOutput: %s\n", cmd, string(output)))
 			}
-			writeLogFile("INFO", fmt.Sprintf("Command executed successfully: %s\nOutput: %s\n", cmd, string(output)))
 		}
 	}
 }
