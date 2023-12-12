@@ -1,23 +1,83 @@
-# Project Name
+# Puller - GitLab Webhook Receiver
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Build Status](https://img.shields.io/travis/username/projectname.svg)](https://travis-ci.org/username/projectname)
-[![Coverage Status](https://coveralls.io/repos/github/username/projectname/badge.svg?branch=master)](https://coveralls.io/github/username/projectname?branch=master)
-[![Contributors](https://img.shields.io/github/contributors/username/projectname.svg)](https://github.com/username/projectname/graphs/contributors)
+## Overview
 
-> Short project description goes here.
+> This Go program serves as a webhook receiver for GitLab events. It is designed to handle incoming webhook requests, authenticate them using a secret token, and execute specified commands based on the received event type.
 
 ## Table of Contents
 
-- [Installation](#installation)
+- [Configuration](#configuration)
+- [Logging](#logging)
 - [Usage](#usage)
-- [Features](#features)
-- [Contributing](#contributing)
-- [License](#license)
 
-## Installation
 
-Describe how to install your project, including any dependencies and specific steps to follow. For example:
+## Configuration
 
-```bash
-npm install
+The program reads its configuration from a `config.json` file. Create a `config.json` file with the required configuration. 
+
+> Feel free to customize the configuration and commands in the `config.json` file to suit your specific project requirements.
+
+```json
+{
+  "key": "your-secret-token",
+  "repos": [
+    {
+      "name": "testrepo",
+      "path": "/var/www/testrepo",
+      "branch": "refs/heads/main",
+      "events": [
+        {
+          "type": "push",
+          "commands": [
+            "git pull",
+            "php artisan optimize:clear"
+          ]
+        }
+      ],
+      "notifications": [
+        {
+          "type": "email",
+          "to": [
+            "sandakelum@pramixit.com"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "yoyo",
+      "path": "/var/www/testrepo",
+      "branch": "refs/heads/main",
+      "events": [
+        {
+          "type": "push",
+          "commands": [
+            "git pull",
+            "php artisan optimize:clear"
+          ]
+        }
+      ],
+      "notifications": [
+        {
+          "type": "email",
+          "to": [
+            "sandakelum@pramixit.com"
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+```
+
+## Logging
+
+The `writeLogFile` function facilitates the logging of messages to the `app.log` file based on the message type (INFO or ERROR). This log file captures execution details, providing insights into the success or failure of the executed commands.
+
+## Usage
+
+1. Set up a webhook in your GitLab project to communicate with the program. Point the webhook to the `/puller` endpoint on the running server where your program is listening.
+
+2. Execute the compiled binary. 
+
+
