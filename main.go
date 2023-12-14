@@ -80,6 +80,7 @@ func handleWebHook(c *gin.Context) {
 }
 
 func RunCmd(event string, path string, events []stucts.Event) {
+	exec.Command("sh", "-c", "git config --global --add safe.directory "+path).Run()
 	for _, e := range events {
 		if event == e.Type {
 			cmd := "cd " + path
@@ -120,10 +121,21 @@ func writeLogFile(messageType, message string) error {
 }
 
 func main() {
+
 	server := gin.Default()
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8081" // Default port if not specified
+	}
+
+	ginMode := os.Getenv("GIN_MODE")
+	if ginMode == "release" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	server.POST("/puller", handleWebHook)
 
-	server.Run(":8080")
+	server.Run(":" + port)
 
 }
