@@ -77,9 +77,22 @@ The `writeLogFile` function facilitates the logging of messages to the `app.log`
 
 ## Usage
 
-1. Set up a webhook in your GitLab project to communicate with the program. Point the webhook to the `/puller` endpoint on the running server where your program is listening.
+```bash
+#download
+wget https://github.com/sanda0/puller/releases/download/v1.1/puller
 
-2. Run the binary as a service by following the system-specific steps to configure your compiled binary for service execution.
+##
+sudo chmod +x puller
+
+### init
+sudo ./puller -i
+
+###
+sudo service puller start
+
+
+
+```
 
 ## TODO List
 
