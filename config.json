@@ -1,39 +1,26 @@
 {
-	"key": "123456",
-	"repos": [
-		{
-			"name": "testrepo",
-			"path": "/var/www/codglo_web_html",
-			"branch": "refs/heads/main",
-			"events": [
-				{
-					"type": "push",
-					"commands": ["git pull"]
-				}
-			],
-			"notifications": [
-				{
-					"type": "email",
-					"to": ["sandakelum@pramixit.com"]
-				}
-			]
-		},
-		{
-			"name": "yoyo",
-			"path": "/var/www/testrepo",
-			"branch": "refs/heads/main",
-			"events": [
-				{
-					"type": "push",
-					"commands": ["git pull", "php artisan optimize:clear"]
-				}
-			],
-			"notifications": [
-				{
-					"type": "email",
-					"to": ["sandakelum@pramixit.com"]
-				}
-			]
-		}
-	]
+    "key": "hoHe6peVLUYYDO52jtMdifE7E",
+    "repos": [
+        {
+            "branch": "refs/heads/main",
+            "events": [
+                {
+                    "commands": [
+                        "git pull"
+                    ],
+                    "type": "push"
+                }
+            ],
+            "name": "testrepo",
+            "notifications": [
+                {
+                    "to": [
+                        ""
+                    ],
+                    "type": ""
+                }
+            ],
+            "path": "/home/tmp/"
+        }
+    ]
 }
