@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"os/exec"
+	"os/user"
 	"path/filepath"
 )
 
@@ -19,6 +20,7 @@ Environment=PORT=8080
 Environment=GO_ENV=production
 Environment=GIN_MODE=release
 Type=simple
+User=%s
 Restart=always
 RestartSec=5s
 ExecStart=%s/puller -s
@@ -28,12 +30,17 @@ WorkingDirectory=%s
 WantedBy=multi-user.target
 `
 
+	user, err := user.Current()
+	if err != nil {
+		return fmt.Errorf("error getting current user: %w", err)
+	}
+
 	currentDir, err := os.Getwd()
 	if err != nil {
 		return fmt.Errorf("error getting current directory: %w", err)
 	}
 
-	serviceContent = fmt.Sprintf(serviceContent, currentDir, currentDir)
+	serviceContent = fmt.Sprintf(serviceContent, user.Username, currentDir, currentDir)
 	serviceFileName := "puller.service"
 	serviceFilePath := filepath.Join("/lib/systemd/system", serviceFileName)
 
