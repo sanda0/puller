@@ -1,2 +1,4 @@
 tmp/
 app.log
+config.json
+bin/
