@@ -1,8 +1,8 @@
 {
-    "key": "hoHe6peVLUYYDO52jtMdifE7E",
+    "key": "AxQZwy3MSuls31yCTSQIsKy9E",
     "repos": [
         {
-            "branch": "refs/heads/main",
+            "branch": "refs/heads/\u003cbranch-name\u003e",
             "events": [
                 {
                     "commands": [
@@ -11,7 +11,7 @@
                     "type": "push"
                 }
             ],
-            "name": "testrepo",
+            "name": "\u003crepo-name\u003e",
             "notifications": [
                 {
                     "to": [
@@ -20,7 +20,7 @@
                     "type": ""
                 }
             ],
-            "path": "/home/tmp/"
+            "path": "\u003clocal-path\u003e"
         }
     ]
 }
