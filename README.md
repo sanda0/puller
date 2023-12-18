@@ -23,9 +23,9 @@ The program reads its configuration from a `config.json` file. Create a `config.
   "key": "your-secret-token",
   "repos": [
     {
-      "name": "testrepo",
-      "path": "/var/www/testrepo",
-      "branch": "refs/heads/main",
+      "name": "repo_name", #NOTE:case sensitive
+      "path": "/path/to/project",
+      "branch": "refs/heads/branch_name",
       "events": [
         {
           "type": "push",
@@ -39,29 +39,7 @@ The program reads its configuration from a `config.json` file. Create a `config.
         {
           "type": "email",
           "to": [
-            "sandakelum@pramixit.com"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "yoyo",
-      "path": "/var/www/testrepo",
-      "branch": "refs/heads/main",
-      "events": [
-        {
-          "type": "push",
-          "commands": [
-            "git pull",
-            "php artisan optimize:clear"
-          ]
-        }
-      ],
-      "notifications": [
-        {
-          "type": "email",
-          "to": [
-            "sandakelum@pramixit.com"
+            ""
           ]
         }
       ]
@@ -79,7 +57,7 @@ The `writeLogFile` function facilitates the logging of messages to the `app.log`
 
 ```bash
 #download
-wget https://github.com/sanda0/puller/releases/download/v1.1/puller
+wget https://github.com/sanda0/puller/releases/download/v1.3/puller
 
 ##
 sudo chmod +x puller
@@ -87,8 +65,6 @@ sudo chmod +x puller
 ### init
 sudo ./puller -i
 
-###
-sudo service puller start
 
 
 
