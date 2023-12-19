@@ -53,7 +53,7 @@ The `writeLogFile` function facilitates the logging of messages to the `app.log`
 
 ```bash
 #download
-wget https://github.com/sanda0/puller/releases/download/v1.5/puller
+wget https://github.com/sanda0/puller/releases/download/v1.6/puller
 
 ##
 sudo chmod +x puller
