@@ -3,11 +3,11 @@ package stucts
 import "time"
 
 type User struct {
-	ID       int    `json:"user_id"`
-	Name     string `json:"user_name"`
-	Username string `json:"user_username"`
-	Email    string `json:"user_email"`
-	Avatar   string `json:"user_avatar"`
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Avatar   string `json:"avatar_url"`
 }
 
 type Project struct {
