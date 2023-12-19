@@ -20,32 +20,28 @@ The program reads its configuration from a `config.json` file. Create a `config.
 
 ```json
 {
-  "key": "your-secret-token",
-  "repos": [
-    {
-      "name": "repo_name", #NOTE:case sensitive
-      "path": "/path/to/project",
-      "branch": "refs/heads/branch_name",
-      "events": [
+    "email": "email@example.com",
+    "email_password": "password",
+    "key": "<key>",
+    "repos": [
         {
-          "type": "push",
-          "commands": [
-            "git pull",
-            "php artisan optimize:clear"
-          ]
+            "branch": "branch-name",
+            "events": [
+                {
+                    "commands": [
+                        "git pull"
+                    ],
+                    "type": "push"
+                }
+            ],
+            "name": "repo-name",
+            "path": "local-path"
         }
-      ],
-      "notifications": [
-        {
-          "type": "email",
-          "to": [
-            ""
-          ]
-        }
-      ]
-    }
-  ]
+    ],
+    "smtp_host": "smtp.pramixit.com",
+    "smtp_port": "587"
 }
+
 
 ```
 
@@ -57,7 +53,7 @@ The `writeLogFile` function facilitates the logging of messages to the `app.log`
 
 ```bash
 #download
-wget https://github.com/sanda0/puller/releases/download/v1.3/puller
+wget https://github.com/sanda0/puller/releases/download/v1.4/puller
 
 ##
 sudo chmod +x puller
@@ -73,7 +69,7 @@ sudo ./puller -i
 ## TODO List
 
 - [x] Logging the success or failure of the executed commands.
-- [ ] E-mail notifications.
+- [x] E-mail notifications.
 - [ ] Discord notifications.
 
 
