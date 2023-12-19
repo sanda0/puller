@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"net"
 	"os"
 	"os/exec"
 	"os/user"
@@ -49,10 +50,24 @@ WantedBy=multi-user.target
 		return fmt.Errorf("error writing service file: %w", err)
 	}
 
-	cmd := exec.Command("systemctl", "daemon-reload")
+	cmd := exec.Command("sudo", "systemctl", "daemon-reload")
 	err = cmd.Run()
 	if err != nil {
 		return fmt.Errorf("error running systemctl daemon-reload: %w", err)
+	}
+
+	// Allow port 8080 through the firewall
+	ufwCmd := exec.Command("sudo", "ufw", "allow", "8080")
+	ufwErr := ufwCmd.Run()
+	if ufwErr != nil {
+		return fmt.Errorf("error allowing port 8080 through the firewall: %w", ufwErr)
+	}
+
+	// Start the puller service
+	startCmd := exec.Command("sudo", "service", "puller", "start")
+	startErr := startCmd.Run()
+	if startErr != nil {
+		return fmt.Errorf("error starting puller service: %w", startErr)
 	}
 
 	return nil
@@ -90,4 +105,24 @@ func GenerateConfigFile() error {
 	}
 
 	return nil
+}
+
+func OutputBanner() {
+	address, err := net.InterfaceAddrs()
+	if err != nil {
+		fmt.Println(err)
+
+	}
+	for _, addr := range address {
+		ipNet, ok := addr.(*net.IPNet)
+		if ok && !ipNet.IP.IsLoopback() {
+			if ipNet.IP.To4() != nil {
+				fmt.Print(`
+
+	USE THIS URL AS YOUR GITLAB WEBHOOK URL: http://` + ipNet.IP.String() + `:8080/puller
+
+				`)
+			}
+		}
+	}
 }

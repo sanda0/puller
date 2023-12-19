@@ -45,6 +45,7 @@ func main() {
 			os.Exit(1)
 		} else {
 			fmt.Println("Service created successfully")
+
 		}
 		fmt.Println("Creating config.json")
 		err = setup.GenerateConfigFile()
@@ -53,6 +54,7 @@ func main() {
 			os.Exit(1)
 		} else {
 			fmt.Println("Config created successfully")
+			setup.OutputBanner()
 		}
 	}
 }
