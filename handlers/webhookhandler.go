@@ -106,9 +106,11 @@ func HandleWebHook(c *gin.Context) {
 	} else if payload.ObjectKind == "merge_request" {
 		if payload.ObjectAttributes.TargetBranch == repo.Branch {
 
-			go runCmd(payload.ObjectKind, repo.Path, repo.Events, payload.ObjectAttributes.LastCommit.Author.Email)
+			go runCmd(payload.ObjectKind, repo.Path, repo.Events, payload.User.Email)
 		}
 	}
+
+	c.JSON(http.StatusOK, "OK")
 
 }
 
@@ -168,8 +170,6 @@ func SendEmail(To string, Subject string, Body string) error {
 		"\r\n" +
 		Body
 
-	fmt.Println(message)
-
 	m := gomail.NewMessage()
 	m.SetHeader("From", config.Email)
 	m.SetHeader("To", To)
@@ -187,6 +187,7 @@ func SendEmail(To string, Subject string, Body string) error {
 
 	if err := d.DialAndSend(m); err != nil {
 		fmt.Println(err)
+		writeLogFile("ERROR", fmt.Sprintf("Error sending email: %s\n", err))
 		return err
 	}
 
