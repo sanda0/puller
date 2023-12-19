@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -8,9 +9,12 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sanda0/puller/stucts"
+	"gopkg.in/gomail.v2"
 )
 
 func findRepoByName(repoName string) (*stucts.Repo, error) {
@@ -56,6 +60,24 @@ func getKeyFromConfig() (string, error) {
 	return config.Key, nil
 }
 
+func getConfig() (*stucts.Config, error) {
+	var config stucts.Config
+
+	// Read the config.json file
+	file, err := ioutil.ReadFile("config.json")
+	if err != nil {
+		return nil, fmt.Errorf("error reading config file: %w", err)
+	}
+
+	// Unmarshal the JSON into the Config struct
+	err = json.Unmarshal(file, &config)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling config: %w", err)
+	}
+
+	return &config, nil
+}
+
 func HandleWebHook(c *gin.Context) {
 	secretToken := c.GetHeader("X-Gitlab-Token")
 	key, err := getKeyFromConfig()
@@ -74,12 +96,23 @@ func HandleWebHook(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err)
 	}
-	if payload.Ref == repo.Branch {
-		go runCmd(payload.EventName, repo.Path, repo.Events)
+
+	if payload.ObjectKind == "push" {
+		refParts := strings.Split(payload.Ref, "/")
+		refSuffix := refParts[len(refParts)-1]
+		if refSuffix == repo.Branch {
+			go runCmd(payload.ObjectKind, repo.Path, repo.Events, payload.UserEmail)
+		}
+	} else if payload.ObjectKind == "merge_request" {
+		if payload.ObjectAttributes.TargetBranch == repo.Branch {
+
+			go runCmd(payload.ObjectKind, repo.Path, repo.Events, payload.ObjectAttributes.LastCommit.Author.Email)
+		}
 	}
+
 }
 
-func runCmd(event string, path string, events []stucts.Event) {
+func runCmd(event string, path string, events []stucts.Event, userEmail string) {
 	exec.Command("sh", "-c", "git config --global --add safe.directory "+path).Run()
 	for _, e := range events {
 		if event == e.Type {
@@ -92,8 +125,10 @@ func runCmd(event string, path string, events []stucts.Event) {
 			output, err := exec.Command("sh", "-c", cmd).CombinedOutput()
 			if err != nil {
 				writeLogFile("ERROR", fmt.Sprintf("Failed to execute command: %s\nOutput: %s\nError: %v\n", cmd, string(output), err))
+				SendEmail(userEmail, "Failed to execute command", fmt.Sprintf("Failed to execute command: %s\nOutput: %s\nError: %v\n", cmd, string(output), err))
 			} else {
 				writeLogFile("INFO", fmt.Sprintf("Command executed successfully: %s\nOutput: %s\n", cmd, string(output)))
+				SendEmail(userEmail, "Command executed successfully", fmt.Sprintf("Command executed successfully: %s\nOutput: %s\n", cmd, string(output)))
 			}
 		}
 	}
@@ -117,5 +152,43 @@ func writeLogFile(messageType, message string) error {
 	}
 
 	logger.Println(message)
+
+	return nil
+}
+
+func SendEmail(To string, Subject string, Body string) error {
+	config, err := getConfig()
+	if err != nil {
+		log.Println("Error getting email configuration:", err)
+		return err
+	}
+
+	message := "To: " + To + "\r\n" +
+		"Subject: " + Subject + "\r\n" +
+		"\r\n" +
+		Body
+
+	fmt.Println(message)
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", config.Email)
+	m.SetHeader("To", To)
+	m.SetHeader("Subject", Subject)
+	m.SetBody("text/plain", message)
+
+	port, err := strconv.Atoi(config.SMTPPort)
+	if err != nil {
+		log.Printf("Error converting SMTPPort to int: %s\n", err)
+		return err
+	}
+	d := gomail.NewDialer(config.SMTPHost, port, config.Email, config.EmailPassword)
+
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+
+	if err := d.DialAndSend(m); err != nil {
+		fmt.Println(err)
+		return err
+	}
+
 	return nil
 }

@@ -76,14 +76,17 @@ WantedBy=multi-user.target
 func GenerateConfigFile() error {
 	const configFile = "config.json"
 	config := map[string]interface{}{
-		"key": "",
+		"key":            "",
+		"email":          "email@example.com",
+		"email_password": "password",
+		"smtp_host":      "smtp.pramixit.com",
+		"smtp_port":      "587",
 		"repos": []map[string]interface{}{
 			{
-				"name":          "<repo-name>",
-				"path":          "<local-path>",
-				"branch":        "refs/heads/<branch-name>",
-				"events":        []map[string]interface{}{{"type": "push", "commands": []string{"git pull"}}},
-				"notifications": []map[string]interface{}{{"type": "", "to": []string{""}}},
+				"name":   "repo-name",
+				"path":   "local-path",
+				"branch": "branch-name",
+				"events": []map[string]interface{}{{"type": "push", "commands": []string{"git pull"}}},
 			},
 		},
 	}
@@ -117,11 +120,7 @@ func OutputBanner() {
 		ipNet, ok := addr.(*net.IPNet)
 		if ok && !ipNet.IP.IsLoopback() {
 			if ipNet.IP.To4() != nil {
-				fmt.Print(`
-
-	USE THIS URL AS YOUR GITLAB WEBHOOK URL: http://` + ipNet.IP.String() + `:8080/puller
-
-				`)
+				fmt.Println("\n\nUSE THIS URL AS YOUR GITLAB WEBHOOK URL: http://" + ipNet.IP.String() + ":8080/puller\n\n")
 			}
 		}
 	}
