@@ -110,6 +110,8 @@ func HandleWebHook(c *gin.Context) {
 		}
 	}
 
+	c.JSON(http.StatusOK, "OK")
+
 }
 
 func runCmd(event string, path string, events []stucts.Event, userEmail string) {
